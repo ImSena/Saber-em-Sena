@@ -1,0 +1,47 @@
+{{#if sucessMessage}}
+    <div>
+        {{sucessMessage}}
+    </div>
+{{/if}}
+
+{{#if validationErrors}}
+        <div class="error-container">
+            <h2>{{error}}</h2>
+            <ul>
+                {{#each validationErrors}}
+                    <li>{{this}}</li>
+                {{/each}}
+                {{#if fileError}}
+                    <li></li>
+                {{/if}}
+            </ul>
+        </div>
+{{/if}}
+
+<div class="container">
+    <form action="/SecretPages/add" id="formPost" method="post" enctype="multipart/form-data">
+        <label id="title">
+            Titulo
+        </label>
+        <textarea name="title" id="title" placeholder="Digite o titulo"></textarea>
+
+        <label id="subtitle">
+            Subtitulo
+        </label>
+        <textarea name="subtitle" id="subtitle" placeholder="Digite o subtitulo"></textarea>
+
+        <div id="camposAdicionais">
+
+        </div>
+
+        <div>
+            <select id="opcaoInput">
+                <option value="textarea">Texto</option>
+                <option value="file">Imagem</option>
+            </select>
+            <button type="button" id="add">Adicionar</button>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+</div>
