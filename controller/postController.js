@@ -23,8 +23,8 @@ errors={}
         errors.textContent = 'Deve haver pelo menos 2 parágrafos de texto.';
     } else {
         textContent.forEach((el, i) => {
-            if (typeof el !== 'string' || el.length >= 150 || !el) {
-                errors.textContent = 'Cada parágrafo de texto deve ter no máximo 150 caracteres.';
+            if (typeof el !== 'string' || el.length >= 200 || !el) {
+                errors.textContent = 'Cada parágrafo de texto deve ter no máximo 200 caracteres.';
             }
         });
     }

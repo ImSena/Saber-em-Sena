@@ -1,10 +1,19 @@
-*{
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+
+:root {
+    --font: 'Roboto', sans-serif;
+    --label: 1.4rem;
+    --conteudo: 1.1rem;
 }
 
-#navbar{
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font);
+}
+
+#navbar {
     display: flex;
     height: 60px;
     width: 100%;
@@ -13,21 +22,19 @@
     padding: 0 60px 0 60px;
 }
 
-#navbar > ul{
+#navbar>ul {
     display: flex;
     list-style: none;
 }
 
-#navar > ul > li{
-    
-}
+#navar>ul>li {}
 
-#navbar > ul > li > a{
+#navbar>ul>li>a {
     text-decoration: none;
     margin: 0 20px 0 20px
 }
 
-#login{
+#login {
     display: flex;
     flex-direction: column;
     max-width: 450px;
@@ -54,25 +61,35 @@ form {
     flex-direction: column;
 }
 
-label, textarea, select, button {
+label,
+textarea,
+select,
+button {
     margin-bottom: 10px;
 }
 
 label {
     font-weight: bold;
+    font-size: var(--label);
 }
 
 textarea {
     height: 100px;
     resize: vertical;
     padding: 8px;
-    border: 1px solid #ddd; /* Adicionando uma borda para suavizar o visual */
+    border: 1px solid #ddd;
+    /* Adicionando uma borda para suavizar o visual */
     border-radius: 4px;
-    transition: border-color 0.3s ease; /* Adicionando transição para suavizar a mudança de cor da borda */
+    transition: border-color 0.3s ease;
+    /* Adicionando transição para suavizar a mudança de cor da borda */
+    resize: none;
+    width: 100%;
+    font-size: var(--conteudo);
 }
 
 textarea:focus {
-    border-color: #4CAF50; /* Mudando a cor da borda quando o textarea está em foco */
+    border-color: #4CAF50;
+    /* Mudando a cor da borda quando o textarea está em foco */
 }
 
 
@@ -80,27 +97,23 @@ textarea:focus {
     margin-bottom: 20px;
 }
 
-#campoAdd {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
 
 #deleteCampo {
-    margin-left: 10px;
     background-color: #dc3545;
     color: #fff;
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
+    width: 100%;
 }
 
 #deleteCampo:hover {
     background-color: #c82333;
 }
 
-.error-container, .success-container {
+.error-container,
+.success-container {
     margin-bottom: 20px;
     padding: 10px;
     border-radius: 4px;
@@ -116,4 +129,94 @@ textarea:focus {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
+}
+
+.campoAdd {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.campoAdd>label {
+    align-self: self-start;
+}
+
+.campoAdd>input[type="file"] {
+    margin-bottom: 15px;
+}
+
+.campoAdd>.preview {
+    width: 200px;
+    height: 200px;
+    display: block;
+    max-width: 100%;
+    max-height: 100%
+}
+
+#preview {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+#preview:hover{
+    background-color: #b33a2c;
+}
+
+#enviar {
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+}
+
+#enviar:hover{
+    background-color: #26a65b;
+}
+
+.add {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.add:hover{
+    background-color: #2d82ba;
+}
+select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+select:hover {
+    border-color: #999;
+}
+
+#titulo{
+    margin-bottom: 5px;
+}
+
+#sub{
+    margin-bottom: 5px;
+}
+
+.msg{
+    color: red;
+    font-size: 0.9rem;
 }

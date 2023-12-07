@@ -17,15 +17,21 @@
 
 <div class="container">
     <form action="/SecretPages/add" id="formPost" method="post" enctype="multipart/form-data">
-        <label id="title">
-            Titulo
-        </label>
-        <textarea name="title" id="title" placeholder="Digite o titulo"></textarea>
+        <div id="titulo">
+            <label id="title">
+                Titulo
+            </label>
+            <textarea name="title" id="title" placeholder="Digite o titulo" maxlength="50"></textarea>
+            <p class="msg" id="t"></p>
+        </div>
 
-        <label id="subtitle">
-            Subtitulo
-        </label>
-        <textarea name="subtitle" id="subtitle" placeholder="Digite o subtitulo"></textarea>
+        <div id="sub">
+            <label id="subtitle">
+                Subtitulo
+            </label>
+            <textarea name="subtitle" id="subt" placeholder="Digite o subtitulo" maxlength="60"></textarea>
+            <p class="msg" id="s"></p>
+        </div>
 
         <div id="camposAdicionais">
 
@@ -36,9 +42,11 @@
                 <option value="textarea">Texto</option>
                 <option value="file">Imagem</option>
             </select>
-            <button type="button" id="add">Adicionar</button>
+            <button type="button" class="add">Adicionar</button>
         </div>
 
-        <button type="submit">Enviar</button>
+        <button type="button" id="preview">Preview</button>
+
+        <button type="submit" id="enviar">Enviar</button>
     </form>
 </div>
