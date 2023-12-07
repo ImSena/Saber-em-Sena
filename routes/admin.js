@@ -24,6 +24,6 @@ router.get('/addPost',  (req, res)=>{
     res.render('admin/addPost');
 })
 
-router.post('/add',upload.array('image', 5), postController.create)
+router.post('/add',upload.array('image'), postController.create)
 
 module.exports = router;

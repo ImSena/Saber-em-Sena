@@ -1,21 +1,18 @@
-{{#if sucessMessage}}
-    <div>
-        {{sucessMessage}}
-    </div>
+{{#if error}}
+<div class="error-container">
+    <h2>{{error}}</h2>
+    <ul>
+        {{#each validationErrors}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ul>
+</div>
 {{/if}}
 
-{{#if validationErrors}}
-        <div class="error-container">
-            <h2>{{error}}</h2>
-            <ul>
-                {{#each validationErrors}}
-                    <li>{{this}}</li>
-                {{/each}}
-                {{#if fileError}}
-                    <li></li>
-                {{/if}}
-            </ul>
-        </div>
+{{#if sucessMessage}}
+<div class="success-container">
+    <h2>{{sucessMessage}}</h2>
+</div>
 {{/if}}
 
 <div class="container">

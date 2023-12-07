@@ -1,8 +1,11 @@
 const Post = require('../modules/Post');
 const fs = require('fs').promises;
 
-const verify = (title, subtitle, textContent) => {
-    const errors = {};
+
+let errors = {};
+
+const verify = (title, subtitle, textContent, files) => {
+errors={}
 
     if (!title) {
         errors.title = 'O título é obrigatório.';
@@ -26,6 +29,21 @@ const verify = (title, subtitle, textContent) => {
         });
     }
 
+    if(files.length > 0){
+        const allowedSize = 90 * 1024;
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+        files.forEach(file =>{
+            if(file.size > allowedSize){
+                errors.files = 'Cada arquivo deve ter 90mb';
+            }else if(!allowedTypes.includes(file.mimetype)){
+                errors.files = 'Arquivo não suportado';
+            }
+        })
+    }else{
+        errors.files = 'Você deve ao menos ter uma imagem';
+    }
+
     return errors;
 }
 
@@ -42,7 +60,7 @@ exports.create = async (req, res) => {
     });
 
     //verify
-    const validationErrors = verify(title, subtitle, textContent);
+    const validationErrors = verify(title, subtitle, textContent, files);
 
     if (Object.keys(validationErrors).length === 0) {
         textContent.forEach((el, i) => {
@@ -52,44 +70,26 @@ exports.create = async (req, res) => {
             });
         });
 
-        const filesUpload = []
-        const filesDelete = [];
 
         files.forEach(file => {
-            const allowedSize = 90 * 1024;
             const filePath = `uploads/${file.filename}`;
-            if (file.size <= allowedSize) {
-                newPost.content.push({
-                    type: 'image',
-                    content: filePath
-                });
-                filesUpload.push(filePath);
-            } else {
-                filesDelete.push(filePath);
-            }
+            newPost.content.push({
+                type: 'image',
+                content: filePath
+            });
         });
 
-        if (filesDelete.length > 0) {
-            const totalFiles = [...filesUpload, ...filesDelete];
-            totalFiles.forEach((el, i) => {
-                fs.unlink(el).catch(err => console.log('errão'))
-            })
 
-            
-        } else {
             //await newPost.save().then(() => res.send('foi')).catch((err) => res.send('erro')); 
-            res.render('admin/addPost', {sucessMessage: "Post salvo com sucessso"});
-        }
+            res.status(200).render('admin/addPost', { sucessMessage: "Post salvo com sucesso" });
     } else {
         files.forEach(file => {
             const filePath = `uploads/${file.filename}`;
             fs.unlink(filePath).catch(err => console.log('error' + err));
         });
 
-
-
         res.status(400).render('admin/addPost', {
-            error: 'Cheio de erros',
+            error: 'ATENÇÃO!',
             validationErrors: validationErrors,
             title: title,
             subtitle: subtitle,
