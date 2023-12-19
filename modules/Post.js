@@ -14,6 +14,10 @@ const PostSchema = new Schema({
     content: {
         type: Array,
         require: true,
+    },
+    order:{
+        type: Array,
+        require: true
     }
 });
 

@@ -19,7 +19,7 @@
     <form action="/SecretPages/add" id="formPost" method="post" enctype="multipart/form-data">
         <div id="titulo">
             <label id="title">
-                Titulo
+                Titulo (máximo de 50 caracters*)
             </label>
             <textarea name="title" id="title" placeholder="Digite o titulo" maxlength="50"></textarea>
             <p class="msg" id="t"></p>
@@ -27,7 +27,7 @@
 
         <div id="sub">
             <label id="subtitle">
-                Subtitulo
+                Subtitulo (máximo de 60 caracters*)
             </label>
             <textarea name="subtitle" id="subt" placeholder="Digite o subtitulo" maxlength="60"></textarea>
             <p class="msg" id="s"></p>
@@ -45,7 +45,9 @@
             <button type="button" class="add">Adicionar</button>
         </div>
 
-        <button type="button" id="preview">Preview</button>
+        <input type="hidden" name="order" value="" id="order">
+
+        <button type="button" id="preview">Preview da página</button>
 
         <button type="submit" id="enviar">Enviar</button>
     </form>

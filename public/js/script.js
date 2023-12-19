@@ -1,34 +1,124 @@
 const camposAdicionais = document.querySelector('div#camposAdicionais');
 const addBtn = document.querySelector('button.add');
-const select = document.querySelector('select#opcaoInput');
+const select = document.querySelector('select#opcaoInput')
 const btnPreview = document.querySelector('button#preview');
 const title = document.querySelector('textarea#title');
-const subtitle = document.querySelector('textarea#subt');
+const subt = document.querySelector('textarea#subt');
 const msgt = document.querySelector('p#t');
 const msgs = document.querySelector('p#s');
+const enviar = document.querySelector('button#enviar');
+const order = document.querySelector('input#order');
+
+
+window.addEventListener('load', ()=>{
+    const year = document.querySelector('span#ano');
+    const ano = new Date().getFullYear();
+
+    year.innerHTML = ano
+})
+
+const verification = ()=>{
+    let alerta = false;
+    let error = false;
+    let imagem = false;
+
+    if (!title.value) {
+        msgt.innerHTML = 'O título é obrigatório.';
+        error = true;
+    } else if (title.value.length > 50) {
+        msgt.innerHTML = 'O título deve ter no máximo 50 caracteres.';
+        error = true;
+    }
+
+    if(!subt.value){
+        msgs.innerHTML = 'O subtitulo é obrigatório';
+        error = true;
+    }else if(subt.value.length > 60){
+        msgs.innerHTML = 'O subtitulo deverá ter no máximo 60 caracteres';
+        error = true;
+    }
+
+    const campos = document.querySelectorAll('.campoAdd');
+    
+    if(campos.length < 3){
+        alert('Atenção! Deve ter pelo menos 2 paragrafos e uma imagem');
+    }else{
+        campos.forEach((campo)=>{
+            const verificacaoTextarea = Array.from(campo.childNodes).some((node)=>{
+                return node.nodeName === 'TEXTAREA';
+            });
+
+            const i = campo.querySelector('input');
+            console.log(i.files.length);
+            if (i.files.length === 0){
+                imagem = true;
+            }
+
+            if(verificacaoTextarea){
+                const textareas = campo.querySelectorAll('textarea');
+                if(!textareas.length < 2){
+                    textareas.forEach((content)=>{
+                        if(!content.value.trim()){
+                            alerta = true;
+                        }
+                    })
+                }else{
+                    alerta = true;
+                }
+            }
+        })
+    }
+
+    if(alerta){
+        alert('Preencha o paragrafo!!');
+    }
+
+    if(error){
+        alert('Atenção!');
+    }
+
+    if(imagem){
+        alert('Coloque pelo menos uma imagem!');
+    }
+
+    return !(alerta || error || imagem);
+}
+
+function send(e){
+    if(!verification()){
+        e.preventDefault();
+    }
+}
 
 function preview(event) {
     const fileInput = event.target;
     const files = fileInput.files;
+    const msg = document.querySelector('p.msgSize');
 
     if (files.length > 0) {
         const file = files[0];
 
-        if (file.type.startsWith('image/')) {
+        const maxSize = 90*1024;
+
+        if (file.type.startsWith('image/') && file.size <= maxSize) {
             const reader = new FileReader();
 
             reader.onload = function (e) {
-                // Aqui, você está selecionando todas as imagens com a classe '.preview'.
-                // Precisamos garantir que estamos selecionando a imagem correta.
                 const imagePreview = fileInput.closest('.campoAdd').querySelector('.preview');
                 imagePreview.src = e.target.result;
                 imagePreview.style.display = 'block';
+                msg.style.color = 'black'
             };
-
             reader.readAsDataURL(file);
         } else {
-            alert('Por favor, selecione um arquivo de imagem válido.');
-            fileInput.value = ''; // Limpa o valor do input para que o mesmo arquivo possa ser selecionado novamente
+            if(!file.type.startsWith('image/')){
+              alert('Por favor, selecione um arquivo de imagem válido.');  
+            }else{
+                
+                msg.style.color = 'red';
+            }
+            
+            fileInput.value = '';
         }
     }
 }
@@ -44,17 +134,22 @@ async function readImage(file) {
 }
 
 function addFild(value) {
+
+    const campoId = value == 'textarea' ? 't' + Date.now() : 'i' + Date.now();
+
     if (value === 'textarea') {
         const div = document.createElement('div');
         div.className = 'campoAdd';
 
         const label = document.createElement('label');
-        label.textContent = 'Adicione um texto';
+        label.textContent = 'Adicione um texto (máximo de 250 caracters*)';
         div.appendChild(label);
 
         const textarea = document.createElement('textarea');
         textarea.placeholder = 'Digite um texto';
-        textarea.name = 'textContent';
+        textarea.name = 'content';
+        
+        order.value += campoId + ',';
         div.appendChild(textarea);
 
         const p = document.createElement('p');
@@ -64,18 +159,19 @@ function addFild(value) {
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
         deleteButton.id = 'deleteCampo';
-        deleteButton.textContent = 'Deletar';
+        deleteButton.textContent = 'Deletar campo';
         deleteButton.addEventListener('click', () => {
+            order.value = order.value.replace(campoId + ',', '');
             div.remove();
         });
         div.appendChild(deleteButton);
         
         camposAdicionais.appendChild(div);
 
-        textarea.maxLength = 200;
+        textarea.maxLength = 250;
 
         textarea.addEventListener('input',()=>{
-            const resto = 200 - textarea.value.length;
+            const resto = 250 - textarea.value.length;
             if(resto <= 30){
                 p.innerText = 'Restam '+resto;
                 if(resto == 0){
@@ -88,23 +184,40 @@ function addFild(value) {
     } else {
         const div = document.createElement('div');
         div.className = 'campoAdd';
+
+        const label = document.createElement('label');
+        label.textContent = 'Adicione uma imagem';
+        div.appendChild(label);
+
         const img = document.createElement('img');
-        img.src = '#';
-        img.className = 'preview'
+        img.src = '/img/preview.png';
+        img.className = 'preview';
+
+        const divImg = document.createElement('div');
+        divImg.className = 'contentPreview';
+        divImg.appendChild(img);
+
         const input = document.createElement('input');
         input.type = 'file';
         input.name = 'image';
+ 
+        order.value += campoId + ',';
 
-        div.appendChild(img);
+        div.appendChild(divImg);
         div.appendChild(input);
+
+        const msg = document.createElement('p');
+        msg.innerHTML = 'Tamanho máximo 90kb*';
+        msg.className = 'msgSize';
+        div.appendChild(msg);
 
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
         deleteButton.id = 'deleteCampo';
-        deleteButton.textContent = 'Deletar';
+        deleteButton.textContent = 'Deletar campo';
         deleteButton.addEventListener('click', () => {
-            input.remove();
-            deleteButton.remove();
+            order.value = order.value.replace(campoId + ',', '');
+            div.remove();
         });
         div.appendChild(deleteButton);
         camposAdicionais.appendChild(div);
@@ -115,7 +228,6 @@ function addFild(value) {
 
 addBtn.addEventListener('click', () => {
     const value = select.value;
-
     addFild(value)
 });
 
@@ -123,7 +235,7 @@ btnPreview.addEventListener('click', async () => {
     const form = document.querySelector('form#formPost');
     const formData = new FormData(form);
     let previewContent = `
-        <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8f8f8; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Roboto, sans-serif">
     `;
 
     for (const [key, value] of formData.entries()) {
@@ -175,7 +287,6 @@ btnPreview.addEventListener('click', async () => {
                     margin-bottom: 20px;
                 }
                 .conteudo {
-                    color: #666;
                     line-height: 1.6;
                 }
                 .preview {
@@ -199,19 +310,29 @@ title.addEventListener('input', ()=>{
 
 
    if(resto <= 10){
-        msgt.innerHTML = 'Faltam apenas '+resto+' caracter';
+        if(resto == 0){
+            msgt.innerHTML = 'Limite de Caracter esgotado';
+        }else{
+            msgt.innerHTML = 'Faltam apenas '+resto+' caracter'; 
+        }
+       
    }else{
         msgt.innerHTML = '';
    }
 })
 
-subtitle.addEventListener('input', ()=>{
-    const resto = 60 - title.value.length;
- 
+subt.addEventListener('input', ()=>{
+    const resto = 60 - subt.value.length;
  
     if(resto <= 10){
-         msgs.innerHTML = 'Faltam apenas '+resto+' caracter';
+        if(resto == 0){
+            msgs.innerHTML = 'Limite de caracter esgotado';
+        }else{
+          msgs.innerHTML = 'Faltam apenas '+resto+' caracter';  
+        }
     }else{
-         msgs.innerHTML = '';
+        msgs.innerHTML = '';
     }
- })
+ });
+
+enviar.addEventListener('click', send);

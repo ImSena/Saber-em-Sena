@@ -1,1 +1,61 @@
-<h1>Bem vindo</h1>
+<header>
+    <nav id="navbar">
+        <a href="/">
+            <img src="/img/logoSaber.png" alt="logo Saber em Sena" height='60px'>
+        </a>
+
+        <ul>
+            <li><a href="/posts">Posts</a></li>
+            <li><a href="/sobre">Sobre</a></li>
+            <li><a href="/contato">Contato</a></li>
+        </ul>
+    </nav>
+
+    <div id="bannerPrincipal">
+        <div id="tituloBanner">
+            <p>Seja muito Bem-Vindo!</p>
+        </div>
+        <div id="textoBanner">
+            <p>Explore meu universo de dicas e curiosidades em cada post. Junte-se à jornada!</p>
+        </div>
+    </div>
+</header>
+
+
+<div class="containerBlog">
+
+<div id="principalPosts">
+    {{#each postsRecentes}}
+        <a class="postP" href="/post/{{id}}">
+            <img src="{{content}}" alt="">
+            <div class="overlay">
+                <h3>{{title}}</h3>
+            </div>
+        </a>
+    {{/each}}
+</div>
+
+    <div id="postsAntigos">
+        {{#each postsAntigos}}
+            <a class="postA" href="/post/{{id}}">
+                <div class="imgPost">
+                    <img src="{{content}}" alt="">
+                </div>
+                <p>{{title}}</p>
+            </a> 
+        {{/each}}
+        
+    </div>
+
+</div>
+
+
+<footer>
+    <p>&copy; <span id="ano"></span> Saber em Sena. Todos os direitos reservados.</p>
+    <p>Contato: <a href="mailto:seu@email.com">BrunoSena14@outlook.com</a></p>
+    <div>
+        <a href="https://facebook.com/seufacebook" target="_blank">Facebook</a>
+        <a href="https://twitter.com/seutwitter" target="_blank">Twitter</a>
+        <a href="https://instagram.com/seuinstagram" target="_blank">Instagram</a>
+    </div>
+</footer>
