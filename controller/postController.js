@@ -116,12 +116,12 @@ exports.find = async (req, res) => {
         // Mapeando os posts para o formato desejado
         const filteredPostsRecentes = postsRecentes.map(post => {
             const firstImage = post.content.find(item => item.type === 'i');
-            return { title: post.title, content: firstImage ? firstImage.content : null, id: post._id};
+            return { title: post.title, content: firstImage ? firstImage.content : null, id: post._id };
         });
 
         const filteredPostsSeguintesAteNove = postsSeguintesAteNove.map(post => {
             const firstImage = post.content.find(item => item.type === 'i');
-            return { title: post.title, content: firstImage ? firstImage.content : null, id: post._id};
+            return { title: post.title, content: firstImage ? firstImage.content : null, id: post._id };
         });
 
         res.render('client/principal', {
@@ -135,14 +135,11 @@ exports.find = async (req, res) => {
     }
 };
 
-exports.findAPost = async(req, res) =>{
+exports.findAPost = async (req, res) => {
     try {
         const id = req.params.id;
 
         const post = await Post.findById(id).lean();
-
-        console.log('Order Before:', post.order);
-        console.log('Content Before:', post.content);
 
         const orderedContent = [];
 
@@ -161,11 +158,35 @@ exports.findAPost = async(req, res) =>{
             }
         });
 
-        console.log('Order After:', post.order);
-        console.log('Content After:', orderedContent);
-
         res.render('client/post', { post: { ...post, content: orderedContent } });
     } catch (error) {
-        
+
+    }
+}
+
+exports.update = async (req, res) => {
+    const id = req.params.id;
+
+}
+
+exports.delete = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const post = await Post.findById({ _id: id }).lean();
+
+        await Post.deleteOne({ _id: id }).then(() => {
+            post.content.map(content => {
+                if (content.type == 'i') {
+                    const filePath = 'public/'+content.content;
+                    fs.unlink(filePath).catch((error)=> console.log('houve um erro para excluir imagem', error, content.content));
+                }
+            })
+        }).catch((error)=>{
+            console.log('Erro ou deletar no banco');
+        })
+    } catch (error) {
+        console.log('Ocorreu algum erro', error);
+    }finally{
+        res.redirect('/SecretPages/configuracao');
     }
 }

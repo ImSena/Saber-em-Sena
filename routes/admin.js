@@ -8,24 +8,26 @@ router.get('/', (req, res)=>{
     res.render('admin/adminCadastro')
 });
 
-router.get('/principal', (req, res)=>{
-    if(req.session.login){
-        res.render('admin/principal');
-    }else{
-        res.send('Cannot GET /SecretPages/principal')
-    }
-})
+router.get('/principal', adminController.findPost)
 
 router.post('/acessarPainel', adminController.login);
 
 router.get('/addPost',  (req, res)=>{
-    if(req.session.login){
-        res.render('admin/addPost');
+    res.render('admin/addPost');
+    /*if(req.session.login){
+        
     }else{
         res.send('Cannot GET /SecretPages/addPost')
-    }
-})
+    }*/
+});
 
-router.post('/add',upload.array('image'), postController.create)
+router.get('/configuracao', adminController.config);
+
+router.post('/add',upload.array('image'), postController.create);
+
+router.get('/editPost/:id', adminController.showFormEdit);
+
+router.get('/deletePost/:id', postController.delete);
+
 
 module.exports = router;

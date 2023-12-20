@@ -1,0 +1,46 @@
+<header>
+    <nav id="navbar">
+        <a href="principal">
+            <img src="/img/logoSaber.png" alt="logo Saber em Sena" height='60px'>
+        </a>
+
+        <ul>
+            <li><a href="configuracao">Config Posts</a></li>
+            <li><a href="addPost">Novo Post</a></li>
+            <li><a href="logout">Logout</a></li>
+        </ul>
+    </nav>
+    
+     <div id="bannerPrincipal">
+        <div id="tituloBanner">
+            <p>Seja muito Bem-Vindo, Admin!</p>
+        </div>
+        <div id="textoBanner">
+            <p>Hora de fazer as configurações</p>
+        </div>
+    </div>
+</header>
+
+<div class="containerBlog">
+    <div id="principalPosts">
+        {{#each postsRecentes}}
+        <a class="postP" href="/post/{{id}}">
+            <img src="/{{content}}" alt="">
+            <div class="overlay">
+                <h3>{{title}}</h3>
+            </div>
+        </a>
+        {{/each}}
+    </div>
+
+    <div id="postsAntigos">
+        {{#each postsAntigos}}
+        <a class="postA" href="/post/{{id}}">
+            <div class="imgPost">
+                <img src="/{{content}}" alt="">
+            </div>
+            <p>{{title}}</p>
+        </a>
+        {{/each}}
+    </div>
+</div>

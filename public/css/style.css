@@ -118,6 +118,8 @@ header > #bannerPrincipal > #textoBanner{
     margin: 5px 0;
     font-size: 14px;
 }
+
+
 #postsAntigos{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -375,4 +377,37 @@ footer a {
     color: #fff;
     text-decoration: none;
     margin: 0 10px;
+}
+
+.containerEdit{
+    width: 100%;
+    display: flex;
+    margin: 25px 0;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgb(173, 173, 173);
+    padding: 20px;
+}
+
+.containerEdit > .imgEdit{
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.containerEdit > .imgEdit > img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.containerEdit > .buttons {
+    display: flex;
+    padding: 0 20px;
+}
+
+.containerEdit > .buttons > a {
+    margin-right: 10px;
 }

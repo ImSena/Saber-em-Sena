@@ -1,0 +1,167 @@
+<div class="container">
+    <form action="/SecretPages/update/{{id}}" id="formPost" method="post" enctype="multipart/form-data">
+        <div id="titulo">
+            <label id="title">
+                Titulo (máximo de 50 caracters*)
+            </label>
+            <textarea name="title" id="title" placeholder="Digite o titulo" maxlength="50"
+                value="{{title}}">{{title}}</textarea>
+            <p class="msg" id="t"></p>
+        </div>
+
+        <div id="sub">
+            <label id="subtitle">
+                Subtitulo (máximo de 60 caracters*)
+            </label>
+            <textarea name="subtitle" id="subt" placeholder="Digite o subtitulo" maxlength="60">{{subtitle}}</textarea>
+            <p class="msg" id="s"></p>
+        </div>
+
+
+
+        <div id="camposAdicionais">
+            {{#each content}}
+            {{#isEqual type 'i'}}
+
+            {{else}}
+            <div class="campoAdd">
+                <label>Edite o texto (máximo de 250 caracters*)</label>
+                <textarea name="content" class="c">{{content}}</textarea>
+                <button type="button" id="deleteCampo" class="delete">Deletar</button>
+            </div>
+            {{/isEqual}}
+            {{/each}}
+        </div>
+
+        <div>
+            <select id="opcaoInput">
+                <option value="textarea">Texto</option>
+                <option value="file">Imagem</option>
+            </select>
+            <button type="button" class="add">Adicionar</button>
+        </div>
+
+        <input type="hidden" name="order" value={{order}} id="order">
+
+        <button type="button" id="preview">Preview da página</button>
+
+        <button type="submit" id="enviar">Salvar</button>
+    </form>
+</div>
+
+<script>
+    const button = document.querySelectorAll('.delete');
+    const content = document.querySelectorAll('.campoAdd');
+    const order = document.querySelector('#order');
+    const ordered = order.value.split(',');
+    const add = document.querySelector('.add');
+    const select = document.querySelector('select#opcaoInput')
+
+    button.forEach((el, index)=>{
+        el.addEventListener('click', ()=>{
+            content[index].remove();
+            ordered.splice(index, 1);
+            order.value = ordered;
+        })
+    });
+
+ 
+
+    function addFild(value) {
+
+    const campoId = value == 'textarea' ? 't' + Date.now() : 'i' + Date.now();
+
+    if (value === 'textarea') {
+        const div = document.createElement('div');
+        div.className = 'campoAdd';
+
+        const label = document.createElement('label');
+        label.textContent = 'Adicione um texto (máximo de 250 caracters*)';
+        div.appendChild(label);
+
+        const textarea = document.createElement('textarea');
+        textarea.placeholder = 'Digite um texto';
+        textarea.name = 'content';
+        
+        order.value += campoId + ',';
+        div.appendChild(textarea);
+
+        const p = document.createElement('p');
+        p.className = 'msg';
+        div.appendChild(p);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.id = 'deleteCampo';
+        deleteButton.textContent = 'Deletar campo';
+        deleteButton.addEventListener('click', () => {
+            order.value = order.value.replace(campoId + ',', '');
+            div.remove();
+        });
+        div.appendChild(deleteButton);
+        
+        camposAdicionais.appendChild(div);
+
+        textarea.maxLength = 250;
+
+        textarea.addEventListener('input',()=>{
+            const resto = 250 - textarea.value.length;
+            if(resto <= 30){
+                p.innerText = 'Restam '+resto;
+                if(resto == 0){
+                    p.innerHTML = 'Esgotou o limite'
+                }
+            }else{
+                p.innerHTML = '';
+            }
+        })
+    } else {
+        const div = document.createElement('div');
+        div.className = 'campoAdd';
+
+        const label = document.createElement('label');
+        label.textContent = 'Adicione uma imagem';
+        div.appendChild(label);
+
+        const img = document.createElement('img');
+        img.src = '/img/preview.png';
+        img.className = 'preview';
+
+        const divImg = document.createElement('div');
+        divImg.className = 'contentPreview';
+        divImg.appendChild(img);
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'image';
+ 
+        order.value += campoId + ',';
+
+        div.appendChild(divImg);
+        div.appendChild(input);
+
+        const msg = document.createElement('p');
+        msg.innerHTML = 'Tamanho máximo 90kb*';
+        msg.className = 'msgSize';
+        div.appendChild(msg);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.id = 'deleteCampo';
+        deleteButton.textContent = 'Deletar campo';
+        deleteButton.addEventListener('click', () => {
+            order.value = order.value.replace(campoId + ',', '');
+            div.remove();
+        });
+        div.appendChild(deleteButton);
+        camposAdicionais.appendChild(div);
+
+        input.addEventListener('change', preview);
+    }
+}
+
+   add.addEventListener('click', ()=>{
+    const value = select.value;
+    addFild(value);
+   })
+</script>

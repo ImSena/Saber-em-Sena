@@ -1,0 +1,47 @@
+<header>
+    <nav id="navbar">
+        <a href="principal">
+            <img src="/img/logoSaber.png" alt="logo Saber em Sena" height='60px'>
+        </a>
+
+        <ul>
+            <li><a href="configuracao">Config Posts</a></li>
+            <li><a href="addPost">Novo Post</a></li>
+            <li><a href="logout">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+{{#if msg}}
+<div class="msg">
+    {{msg}}
+</div>
+{{/if}}
+
+<div class="container">
+
+    <form action="/SecretPages/configuracao" method="GET">
+    <input type="text" name="q" placeholder="Buscar...">
+    <button type="submit">Buscar</button>
+</form>
+{{#isEqual posts ''}}
+    <div class="containerEdit">
+        <img src="/img/warning.png" alt="">
+        <p>Este post não existe ainda, que tal criá-lo?</p>
+    </div>
+{{else}}
+    {{#each posts}}
+        <div class="containerEdit">
+            <a href="/post/{{id}}" class="imgEdit"><img src="/{{content}}" alt=""></a>
+            <p>{{title}}</p>
+
+            <div class="buttons">
+                <a href="editPost/{{id}}"><img src="/img/edit.svg" alt="" width="30px"></a>
+                <a href="deletePost/{{id}}"><img src="/img/delete.svg" alt=""></a>
+            </div>
+        </div>
+    {{/each}}  
+{{/isEqual}}
+  
+</div>
