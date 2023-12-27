@@ -166,6 +166,32 @@ exports.findAPost = async (req, res) => {
 
 exports.update = async (req, res) => {
     const id = req.params.id;
+    
+    const {title, subtitle, content, order} = req.body;
+    const files = req.files;
+    const orderArray = order.split(',').filter(Boolean).map(item => item.charAt(0));
+    const post = await Post.findById({_id: id}).lean();
+    const oldOrder = post.order;
+    let qtdFile = 0;
+
+    
+    post.content.forEach((el, i)=>{
+        if(el.type == 'i'){
+            qtdFile++;
+        }
+    })
+
+    res.send(files);
+
+
+
+    //model
+    const newPost = new Post({
+        title: title,
+        subtitle: subtitle,
+        content: [],
+        order: orderArray,
+    });
 
 }
 
@@ -176,8 +202,8 @@ exports.delete = async (req, res) => {
 
         await Post.deleteOne({ _id: id }).then(() => {
             post.content.map(content => {
-                if (content.type == 'i') {
-                    const filePath = 'public/'+content.content;
+                if (content.type === 'i') {
+                    const filePath = 'public/' + content.content;
                     fs.unlink(filePath).catch((error)=> console.log('houve um erro para excluir imagem', error, content.content));
                 }
             })

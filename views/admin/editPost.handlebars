@@ -22,7 +22,14 @@
         <div id="camposAdicionais">
             {{#each content}}
             {{#isEqual type 'i'}}
-
+            <div class="campoAdd">
+                <label>Escolha nova imagem ou exclua existente</label>
+                <div class="contentPreview">
+                    <img src="/{{content}}" alt="" class="preview">
+                </div>
+                <input type="file" name="image">
+                <button type="button" id="deleteCampo" class="delete">Deletar</button>
+            </div>
             {{else}}
             <div class="campoAdd">
                 <label>Edite o texto (máximo de 250 caracters*)</label>
@@ -56,112 +63,159 @@
     const ordered = order.value.split(',');
     const add = document.querySelector('.add');
     const select = document.querySelector('select#opcaoInput')
+    const inputFile = document.querySelector('input');
 
-    button.forEach((el, index)=>{
-        el.addEventListener('click', ()=>{
+    function preview(event) {
+        const fileInput = event.target;
+        const files = fileInput.files;
+        const msg = document.querySelector('p.msgSize');
+
+        if (files.length > 0) {
+            const file = files[0];
+            const imagePreview = fileInput.closest('.campoAdd').querySelector('.preview');
+
+            const maxSize = 90 * 1024;
+
+            if (file.type.startsWith('image/') && file.size <= maxSize) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    msg.style.color = 'black'
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (!file.type.startsWith('image/')) {
+                    alert('Por favor, selecione um arquivo de imagem válido.');
+                    imagePreview.src = '/img/preview.png';
+                    imagePreview.style.display = 'block';
+                } else {
+
+                    msg.style.color = 'red';
+                }
+
+                fileInput.value = '';
+            }
+        }
+    }
+
+    async function readImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                resolve(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    inputFile.addEventListener('change', preview)
+
+
+    button.forEach((el, index) => {
+        el.addEventListener('click', () => {
             content[index].remove();
             ordered.splice(index, 1);
             order.value = ordered;
         })
     });
 
- 
-
     function addFild(value) {
 
-    const campoId = value == 'textarea' ? 't' + Date.now() : 'i' + Date.now();
+        const campoId = value == 'textarea' ? 't' + Date.now() : 'i' + Date.now();
 
-    if (value === 'textarea') {
-        const div = document.createElement('div');
-        div.className = 'campoAdd';
+        if (value === 'textarea') {
+            const div = document.createElement('div');
+            div.className = 'campoAdd';
 
-        const label = document.createElement('label');
-        label.textContent = 'Adicione um texto (máximo de 250 caracters*)';
-        div.appendChild(label);
+            const label = document.createElement('label');
+            label.textContent = 'Adicione um texto (máximo de 250 caracters*)';
+            div.appendChild(label);
 
-        const textarea = document.createElement('textarea');
-        textarea.placeholder = 'Digite um texto';
-        textarea.name = 'content';
-        
-        order.value += campoId + ',';
-        div.appendChild(textarea);
+            const textarea = document.createElement('textarea');
+            textarea.placeholder = 'Digite um texto';
+            textarea.name = 'content';
 
-        const p = document.createElement('p');
-        p.className = 'msg';
-        div.appendChild(p);
+            order.value += campoId + ',';
+            div.appendChild(textarea);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.type = 'button';
-        deleteButton.id = 'deleteCampo';
-        deleteButton.textContent = 'Deletar campo';
-        deleteButton.addEventListener('click', () => {
-            order.value = order.value.replace(campoId + ',', '');
-            div.remove();
-        });
-        div.appendChild(deleteButton);
-        
-        camposAdicionais.appendChild(div);
+            const p = document.createElement('p');
+            p.className = 'msg';
+            div.appendChild(p);
 
-        textarea.maxLength = 250;
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.id = 'deleteCampo';
+            deleteButton.textContent = 'Deletar campo';
+            deleteButton.addEventListener('click', () => {
+                order.value = order.value.replace(campoId + ',', '');
+                div.remove();
+            });
+            div.appendChild(deleteButton);
 
-        textarea.addEventListener('input',()=>{
-            const resto = 250 - textarea.value.length;
-            if(resto <= 30){
-                p.innerText = 'Restam '+resto;
-                if(resto == 0){
-                    p.innerHTML = 'Esgotou o limite'
+            camposAdicionais.appendChild(div);
+
+            textarea.maxLength = 250;
+
+            textarea.addEventListener('input', () => {
+                const resto = 250 - textarea.value.length;
+                if (resto <= 30) {
+                    p.innerText = 'Restam ' + resto;
+                    if (resto == 0) {
+                        p.innerHTML = 'Esgotou o limite'
+                    }
+                } else {
+                    p.innerHTML = '';
                 }
-            }else{
-                p.innerHTML = '';
-            }
-        })
-    } else {
-        const div = document.createElement('div');
-        div.className = 'campoAdd';
+            })
+        } else {
+            const div = document.createElement('div');
+            div.className = 'campoAdd';
 
-        const label = document.createElement('label');
-        label.textContent = 'Adicione uma imagem';
-        div.appendChild(label);
+            const label = document.createElement('label');
+            label.textContent = 'Adicione uma imagem';
+            div.appendChild(label);
 
-        const img = document.createElement('img');
-        img.src = '/img/preview.png';
-        img.className = 'preview';
+            const img = document.createElement('img');
+            img.src = '/img/preview.png';
+            img.className = 'preview';
 
-        const divImg = document.createElement('div');
-        divImg.className = 'contentPreview';
-        divImg.appendChild(img);
+            const divImg = document.createElement('div');
+            divImg.className = 'contentPreview';
+            divImg.appendChild(img);
 
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.name = 'image';
- 
-        order.value += campoId + ',';
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.name = 'image';
 
-        div.appendChild(divImg);
-        div.appendChild(input);
+            order.value += campoId + ',';
 
-        const msg = document.createElement('p');
-        msg.innerHTML = 'Tamanho máximo 90kb*';
-        msg.className = 'msgSize';
-        div.appendChild(msg);
+            div.appendChild(divImg);
+            div.appendChild(input);
 
-        const deleteButton = document.createElement('button');
-        deleteButton.type = 'button';
-        deleteButton.id = 'deleteCampo';
-        deleteButton.textContent = 'Deletar campo';
-        deleteButton.addEventListener('click', () => {
-            order.value = order.value.replace(campoId + ',', '');
-            div.remove();
-        });
-        div.appendChild(deleteButton);
-        camposAdicionais.appendChild(div);
+            const msg = document.createElement('p');
+            msg.innerHTML = 'Tamanho máximo 90kb*';
+            msg.className = 'msgSize';
+            div.appendChild(msg);
 
-        input.addEventListener('change', preview);
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.id = 'deleteCampo';
+            deleteButton.textContent = 'Deletar campo';
+            deleteButton.addEventListener('click', () => {
+                order.value = order.value.replace(campoId + ',', '');
+                div.remove();
+            });
+            div.appendChild(deleteButton);
+            camposAdicionais.appendChild(div);
+
+            input.addEventListener('change', preview);
+        }
     }
-}
 
-   add.addEventListener('click', ()=>{
-    const value = select.value;
-    addFild(value);
-   })
+    add.addEventListener('click', () => {
+        const value = select.value;
+        addFild(value);
+    })
 </script>
